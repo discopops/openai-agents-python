@@ -570,6 +570,7 @@ class AgentRunner:
                 session_items = []
                 model_responses = []
                 context_wrapper = ensure_context_wrapper(context)
+                context_wrapper._tool_history_input = []
                 set_agent_tool_state_scope(context_wrapper, None)
                 run_state = RunState(
                     context=context_wrapper,
@@ -1505,6 +1506,7 @@ class AgentRunner:
                 auto_previous_response_id=auto_previous_response_id,
             )
             context_wrapper = ensure_context_wrapper(context)
+            context_wrapper._tool_history_input = []
             set_agent_tool_state_scope(context_wrapper, None)
             # input_for_state is the same as input_for_result here
             input_for_state = input_for_result

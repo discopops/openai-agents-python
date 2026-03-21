@@ -57,6 +57,9 @@ class RunContextWrapper(Generic[TContext]):
     """
 
     turn_input: list[TResponseInputItem] = field(default_factory=list)
+    _tool_history_input: list[TResponseInputItem] = field(
+        default_factory=list, repr=False, init=False
+    )
     _approvals: dict[str, _ApprovalRecord] = field(default_factory=dict)
     tool_input: Any | None = None
     """Structured input for the current agent tool run, when available."""
@@ -460,6 +463,7 @@ class RunContextWrapper(Generic[TContext]):
         fork.usage = self.usage
         fork._approvals = self._approvals
         fork.turn_input = self.turn_input
+        fork._tool_history_input = self._tool_history_input
         fork.tool_input = tool_input
         return fork
 
@@ -469,6 +473,7 @@ class RunContextWrapper(Generic[TContext]):
         fork.usage = self.usage
         fork._approvals = self._approvals
         fork.turn_input = self.turn_input
+        fork._tool_history_input = self._tool_history_input
         return fork
 
 
