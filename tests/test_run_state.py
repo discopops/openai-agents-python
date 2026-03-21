@@ -4980,9 +4980,7 @@ class TestDeserializeItemsEdgeCases:
                     type="message",
                     role="assistant",
                     status="completed",
-                    content=[
-                        ResponseOutputText(text="hello", annotations=[], type="output_text")
-                    ],
+                    content=[ResponseOutputText(text="hello", annotations=[], type="output_text")],
                 ),
             )
         ]

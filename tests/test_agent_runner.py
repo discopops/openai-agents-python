@@ -920,16 +920,13 @@ async def test_tool_context_history_does_not_leak_across_reused_context_wrapper_
     first_history = captured_contexts[0].conversation_history
     second_history = captured_contexts[1].conversation_history
     assert any(
-        isinstance(item, dict) and item.get("content") == "first_user"
-        for item in first_history
+        isinstance(item, dict) and item.get("content") == "first_user" for item in first_history
     )
     assert not any(
-        isinstance(item, dict) and item.get("content") == "first_user"
-        for item in second_history
+        isinstance(item, dict) and item.get("content") == "first_user" for item in second_history
     )
     assert any(
-        isinstance(item, dict) and item.get("content") == "second_user"
-        for item in second_history
+        isinstance(item, dict) and item.get("content") == "second_user" for item in second_history
     )
 
 
@@ -1339,9 +1336,9 @@ async def test_resumed_state_updates_agent_after_handoff() -> None:
 
     second = await Runner.run(triage, state)
     assert second.interruptions
-    assert any(item.tool_name == delegate_tool.name for item in second.interruptions), (
-        "handoff should switch approvals to the delegate agent"
-    )
+    assert any(
+        item.tool_name == delegate_tool.name for item in second.interruptions
+    ), "handoff should switch approvals to the delegate agent"
     assert state._current_agent is delegate
 
 
@@ -1444,9 +1441,9 @@ async def test_handoff_filters():
 
     assert result.final_output == "last"
     assert len(result.raw_responses) == 2, "should have two model responses"
-    assert len(result.to_input_list()) == 2, (
-        "should only have 2 inputs: orig input and last message"
-    )
+    assert (
+        len(result.to_input_list()) == 2
+    ), "should only have 2 inputs: orig input and last message"
 
 
 @pytest.mark.asyncio
@@ -2797,9 +2794,9 @@ async def test_tool_use_behavior_first_output():
 
     result = await Runner.run(agent, input="user_message")
 
-    assert result.final_output == Foo(bar="tool_one_result"), (
-        "should have used the first tool result"
-    )
+    assert result.final_output == Foo(
+        bar="tool_one_result"
+    ), "should have used the first tool result"
 
 
 def custom_tool_use_behavior(
