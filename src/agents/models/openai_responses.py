@@ -1565,10 +1565,12 @@ class Converter:
                 "type": "file_search",
             }
         elif tool_choice == "web_search":
-            return {
-                # TODO: revisit the type: ignore comment when ToolChoice is updated in the future
-                "type": "web_search",  # type: ignore[misc, return-value]
-            }
+            return cast(
+                response_create_params.ToolChoice,
+                {
+                "type": "web_search",
+                },
+            )
         elif tool_choice == "web_search_preview":
             return {
                 "type": "web_search_preview",
@@ -1597,7 +1599,10 @@ class Converter:
         elif tool_choice == "mcp":
             # Note that this is still here for backwards compatibility,
             # but migrating to MCPToolChoice is recommended.
-            return {"type": "mcp"}  # type: ignore[misc, return-value]
+            return cast(
+                response_create_params.ToolChoice,
+                {"type": "mcp"},
+            )
         else:
             cls._validate_named_function_tool_choice(
                 tool_choice,
