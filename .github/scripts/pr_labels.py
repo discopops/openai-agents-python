@@ -271,6 +271,30 @@ def load_codex_labels(path: pathlib.Path) -> tuple[list[str], bool]:
     return list(labels), True
 
 
+def fetch_repo_labels() -> set[str]:
+    try:
+        output = subprocess.check_output(
+            ["gh", "label", "list", "--json", "name", "--limit", "1000"],
+            text=True,
+        )
+    except subprocess.CalledProcessError:
+        return set()
+
+    try:
+        payload = json.loads(output)
+    except json.JSONDecodeError:
+        return set()
+
+    repo_labels: set[str] = set()
+    if isinstance(payload, list):
+        for item in payload:
+            if isinstance(item, dict):
+                name = item.get("name")
+                if isinstance(name, str):
+                    repo_labels.add(name)
+    return repo_labels
+
+
 def fetch_existing_labels(pr_number: str) -> set[str]:
     result = subprocess.check_output(
         ["gh", "pr", "view", pr_number, "--json", "labels", "--jq", ".labels[].name"],
@@ -421,8 +445,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         codex_output_valid=codex_output_valid,
         codex_labels=codex_labels,
     )
-    to_add = sorted(desired - existing)
+    repo_labels = fetch_repo_labels()
+    desired_additions = desired - existing
+    to_add = sorted(label for label in desired_additions if label in repo_labels)
+    skipped_missing_labels = sorted(desired_additions - set(to_add))
     to_remove = sorted((existing & managed_labels) - desired)
+
+    if skipped_missing_labels:
+        print("Skipping missing repository label(s): " + ", ".join(skipped_missing_labels))
 
     if not to_add and not to_remove:
         print("Labels already up to date.")
